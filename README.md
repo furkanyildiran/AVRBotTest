@@ -21,5 +21,4 @@ EN(active low) : GND(always enabled)
 LCD pins:  
 RST : PL7  
 CE : PL6  
-DC : PL5  
-a
+DC : PL5
