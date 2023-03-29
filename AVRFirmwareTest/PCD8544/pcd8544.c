@@ -1,4 +1,4 @@
-#include "pcd8544.h"
+/*#include "pcd8544.h"
 #define COMMAND 1
 #define DATA 0
 #define CE_PIN_LOW()    do{*PCD_port_addr &= ~(1 << CE_PIN); asm volatile("NOP\n\tNOP\n\t"::);}while(0)
@@ -180,6 +180,6 @@ void PCD_clear_all(void){
 void PCD_invert(void){
 	send_command(func_set(CHIP_ACTIVE, HORZNTL_ADDR, BASIC_I_SET));
 	send_command(dsply_ctrl(INV_VID_MODE));
-}
+}*/
 
 

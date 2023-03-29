@@ -11,32 +11,33 @@
 #include "pcd8544.h"
 #include "gpio_custom.h"
 #include "stepper.h"
-uint8_t counter;
 char buff[20]="\0";
 int main(void)
 {
-	SPI_master_init(SPI_SCK_DVDR16);
+	/*SPI_master_init(SPI_SCK_DVDR16);
 	PCD_init((volatile uint8_t *const)PORTL_ADDR, 5, 7, 6);
 	PCD_contrast(65);
 	PCD_text("HELLO",0,LINE_0);
 	PCD_text("WORLD",0,LINE_1);
 	PCD_clear_all();
-	A4988_init();
-	DDRA |= (1 << 5) | (1 << 6) | (1 << 7);
-	DDRC |= (1 << 5) | (1 << 6) | (1 << 7);
-	PORTA &= ~((1 << 5) | (1 << 6) | (1 << 7));
-	PORTC &= ~((1 << 5) | (1 << 6) | (1 << 7));
+	A4988_init();*/
+	
 	_delay_ms(5000);
+	sei();
     while (1) 
     {
+		/*A4988_SPEED_LEVEL5();
+		A4988_forward();
+		_delay_ms(5000);
+		A4988_SPEED_LEVEL4();
+		_delay_ms(5000);
+		A4988_SPEED_LEVEL3();
+		_delay_ms(5000);
+		A4988_SPEED_LEVEL2();
+		_delay_ms(5000);
+		A4988_SPEED_LEVEL1();
+		_delay_ms(5000);*/
 		
-		FORWARD_DIRECTION();
-		while(1){
-			STEP_PULSE();
-			_delay_us(800);
-			//sprintf(buff,"counter : %d", counter);
-			//PCD_text(buff,0,LINE_3);
-		}
     }
 }
 
