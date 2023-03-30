@@ -1,4 +1,4 @@
-/*#include "pcd8544.h"
+#include "pcd8544.h"
 #define COMMAND 1
 #define DATA 0
 #define CE_PIN_LOW()    do{*PCD_port_addr &= ~(1 << CE_PIN); asm volatile("NOP\n\tNOP\n\t"::);}while(0)
@@ -132,7 +132,7 @@ void PCD_init(volatile uint8_t *const port_addr, uint8_t dc_pin, uint8_t rst_pin
 	RST_PIN = rst_pin;
 	CE_PIN = ce_pin;
 	PCD_port_addr = port_addr;
-	volatile uint8_t *const DDR_ADDR = (PCD_port_addr + DDR_ADDR_OFFSET);
+	volatile uint8_t *const DDR_ADDR = (PCD_port_addr + GPIO_DDR_ADDR_OFFSET);
 	*DDR_ADDR |= (1 << RST_PIN) | (1 << DC_PIN) | (1 << CE_PIN);
 	CE_PIN_HIGH();
 	reset();
@@ -180,6 +180,6 @@ void PCD_clear_all(void){
 void PCD_invert(void){
 	send_command(func_set(CHIP_ACTIVE, HORZNTL_ADDR, BASIC_I_SET));
 	send_command(dsply_ctrl(INV_VID_MODE));
-}*/
+}
 
 

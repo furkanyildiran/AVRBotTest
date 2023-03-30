@@ -11,7 +11,7 @@ A4988/stepper.d A4988/stepper.o: ../A4988/stepper.c ../A4988/stepper.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\fuse.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\interrupt.h \
- ../A4988/stepper_config.h
+ ../A4988/stepper_config.h ../GPIO/gpio_custom.h
 
 ../A4988/stepper.h:
 
@@ -40,3 +40,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\interrupt.h:
 
 ../A4988/stepper_config.h:
+
+../GPIO/gpio_custom.h:
