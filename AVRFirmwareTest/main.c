@@ -29,8 +29,6 @@ int main(void)
 
     while (1) 
     {
-		
-		A4988_SPEED_LEVEL5();
 		A4988_forward();
 		_delay_ms(5000);
 		A4988_left();

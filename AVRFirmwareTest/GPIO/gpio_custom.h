@@ -91,15 +91,6 @@ extern "C"{
 	#define GPIO_PORTA_U (*(gpio_ptr_u)GPIO_PORTA_ADDR)
 	#define GPIO_DDRA_U  (*(gpio_ptr_u)GPIO_DDRA_ADDR)
 	#define GPIO_PINA_U  (*(gpio_ptr_u)GPIO_PINA_ADDR)
-	/*#define GPIO_PORTB_U (*(gpio_ptr_u)GPIO_PORTB_ADDR)
-	#define GPIO_DDRB_U  (*(gpio_ptr_u)GPIO_DDRB_ADDR)
-	#define GPIO_PINB_U  (*(gpio_ptr_u)GPIO_PINB_ADDR)
-	#define GPIO_PORTC_U (*(gpio_ptr_u)GPIO_PORTC_ADDR)
-	#define GPIO_DDRC_U  (*(gpio_ptr_u)GPIO_DDRC_ADDR)
-	#define GPIO_PINC_U  (*(gpio_ptr_u)GPIO_PINC_ADDR)
-	#define GPIO_PORTD_U (*(gpio_ptr_u)GPIO_PORTD_ADDR)
-	#define GPIO_DDRD_U  (*(gpio_ptr_u)GPIO_DDRD_ADDR)
-	#define GPIO_PIND_U  (*(gpio_ptr_u)GPIO_PIND_ADDR)*/
 	#define GPIO_PORTE_U (*(gpio_ptr_u)GPIO_PORTE_ADDR)
 	#define GPIO_DDRE_U  (*(gpio_ptr_u)GPIO_DDRE_ADDR)
 	#define GPIO_PINE_U  (*(gpio_ptr_u)GPIO_PINE_ADDR)
@@ -152,7 +143,7 @@ extern "C"{
 	
 	typedef union{
 		pins_t pins;
-		volatile uint8_t port;
+		volatile uint8_t reg;
 	}gpio_u, *gpio_ptr_u;
 	
 	#endif  /*end of GPIO_CUSTOM_H_ */

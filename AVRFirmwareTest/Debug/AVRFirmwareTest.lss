@@ -3,23 +3,23 @@ AVRFirmwareTest.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         0000000c  00800200  00000602  00000696  2**0
+  0 .data         0000000c  00800200  00000616  000006aa  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000602  00000000  00000000  00000094  2**1
+  1 .text         00000616  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000006  0080020c  0080020c  000006a2  2**0
+  2 .bss          00000006  0080020c  0080020c  000006b6  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  000006a2  2**0
+  3 .comment      00000030  00000000  00000000  000006b6  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000006d4  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000006e8  2**2
                   CONTENTS, READONLY
-  5 .debug_info   00000bbc  00000000  00000000  00000714  2**0
+  5 .debug_info   00000bbc  00000000  00000000  00000728  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 00000b1a  00000000  00000000  000012d0  2**0
+  6 .debug_abbrev 00000b1a  00000000  00000000  000012e4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   000001fa  00000000  00000000  00001dea  2**0
+  7 .debug_line   000001fa  00000000  00000000  00001dfe  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_str    000003e6  00000000  00000000  00001fe4  2**0
+  8 .debug_str    000003e6  00000000  00000000  00001ff8  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -384,7 +384,7 @@ Disassembly of section .text:
  2bc:	12 e0       	ldi	r17, 0x02	; 2
  2be:	a0 e0       	ldi	r26, 0x00	; 0
  2c0:	b2 e0       	ldi	r27, 0x02	; 2
- 2c2:	e2 e0       	ldi	r30, 0x02	; 2
+ 2c2:	e6 e1       	ldi	r30, 0x16	; 22
  2c4:	f6 e0       	ldi	r31, 0x06	; 6
  2c6:	00 e0       	ldi	r16, 0x00	; 0
  2c8:	0b bf       	out	0x3b, r16	; 59
@@ -409,7 +409,7 @@ Disassembly of section .text:
  2e2:	b2 07       	cpc	r27, r18
  2e4:	e1 f7       	brne	.-8      	; 0x2de <.do_clear_bss_loop>
  2e6:	e1 d0       	rcall	.+450    	; 0x4aa <main>
- 2e8:	8a c1       	rjmp	.+788    	; 0x5fe <_exit>
+ 2e8:	94 c1       	rjmp	.+808    	; 0x612 <_exit>
 
 000002ea <__bad_interrupt>:
  2ea:	8a ce       	rjmp	.-748    	; 0x0 <__vectors>
@@ -725,69 +725,79 @@ Disassembly of section .text:
  572:	87 b1       	in	r24, 0x07	; 7
  574:	85 61       	ori	r24, 0x15	; 21
  576:	87 b9       	out	0x07, r24	; 7
- 578:	82 e0       	ldi	r24, 0x02	; 2
- 57a:	84 bd       	out	0x24, r24	; 36
- 57c:	83 e0       	ldi	r24, 0x03	; 3
- 57e:	85 bd       	out	0x25, r24	; 37
- 580:	80 91 6e 00 	lds	r24, 0x006E	; 0x80006e <__TEXT_REGION_LENGTH__+0x7c006e>
- 584:	82 60       	ori	r24, 0x02	; 2
- 586:	80 93 6e 00 	sts	0x006E, r24	; 0x80006e <__TEXT_REGION_LENGTH__+0x7c006e>
- 58a:	8e ea       	ldi	r24, 0xAE	; 174
- 58c:	87 bd       	out	0x27, r24	; 39
- 58e:	14 98       	cbi	0x02, 4	; 2
- 590:	44 98       	cbi	0x08, 4	; 8
- 592:	10 92 0d 02 	sts	0x020D, r1	; 0x80020d <direction>
- 596:	78 94       	sei
- 598:	4e ea       	ldi	r20, 0xAE	; 174
- 59a:	31 e0       	ldi	r19, 0x01	; 1
- 59c:	22 e0       	ldi	r18, 0x02	; 2
- 59e:	93 e0       	ldi	r25, 0x03	; 3
- 5a0:	84 e0       	ldi	r24, 0x04	; 4
- 5a2:	47 bd       	out	0x27, r20	; 39
- 5a4:	30 93 0d 02 	sts	0x020D, r19	; 0x80020d <direction>
- 5a8:	5f ef       	ldi	r21, 0xFF	; 255
- 5aa:	63 e2       	ldi	r22, 0x23	; 35
- 5ac:	74 ef       	ldi	r23, 0xF4	; 244
- 5ae:	51 50       	subi	r21, 0x01	; 1
- 5b0:	60 40       	sbci	r22, 0x00	; 0
- 5b2:	70 40       	sbci	r23, 0x00	; 0
- 5b4:	e1 f7       	brne	.-8      	; 0x5ae <main+0x104>
- 5b6:	00 c0       	rjmp	.+0      	; 0x5b8 <main+0x10e>
- 5b8:	00 00       	nop
- 5ba:	20 93 0d 02 	sts	0x020D, r18	; 0x80020d <direction>
- 5be:	5f ef       	ldi	r21, 0xFF	; 255
- 5c0:	63 e2       	ldi	r22, 0x23	; 35
- 5c2:	74 ef       	ldi	r23, 0xF4	; 244
- 5c4:	51 50       	subi	r21, 0x01	; 1
+ 578:	87 b1       	in	r24, 0x07	; 7
+ 57a:	87 60       	ori	r24, 0x07	; 7
+ 57c:	87 b9       	out	0x07, r24	; 7
+ 57e:	81 b1       	in	r24, 0x01	; 1
+ 580:	86 60       	ori	r24, 0x06	; 6
+ 582:	81 b9       	out	0x01, r24	; 1
+ 584:	81 b1       	in	r24, 0x01	; 1
+ 586:	87 60       	ori	r24, 0x07	; 7
+ 588:	81 b9       	out	0x01, r24	; 1
+ 58a:	87 b1       	in	r24, 0x07	; 7
+ 58c:	86 60       	ori	r24, 0x06	; 6
+ 58e:	87 b9       	out	0x07, r24	; 7
+ 590:	82 e0       	ldi	r24, 0x02	; 2
+ 592:	84 bd       	out	0x24, r24	; 36
+ 594:	83 e0       	ldi	r24, 0x03	; 3
+ 596:	85 bd       	out	0x25, r24	; 37
+ 598:	80 91 6e 00 	lds	r24, 0x006E	; 0x80006e <__TEXT_REGION_LENGTH__+0x7c006e>
+ 59c:	82 60       	ori	r24, 0x02	; 2
+ 59e:	80 93 6e 00 	sts	0x006E, r24	; 0x80006e <__TEXT_REGION_LENGTH__+0x7c006e>
+ 5a2:	8e ea       	ldi	r24, 0xAE	; 174
+ 5a4:	87 bd       	out	0x27, r24	; 39
+ 5a6:	14 98       	cbi	0x02, 4	; 2
+ 5a8:	44 98       	cbi	0x08, 4	; 8
+ 5aa:	10 92 0d 02 	sts	0x020D, r1	; 0x80020d <direction>
+ 5ae:	78 94       	sei
+ 5b0:	31 e0       	ldi	r19, 0x01	; 1
+ 5b2:	22 e0       	ldi	r18, 0x02	; 2
+ 5b4:	93 e0       	ldi	r25, 0x03	; 3
+ 5b6:	84 e0       	ldi	r24, 0x04	; 4
+ 5b8:	30 93 0d 02 	sts	0x020D, r19	; 0x80020d <direction>
+ 5bc:	4f ef       	ldi	r20, 0xFF	; 255
+ 5be:	53 e2       	ldi	r21, 0x23	; 35
+ 5c0:	64 ef       	ldi	r22, 0xF4	; 244
+ 5c2:	41 50       	subi	r20, 0x01	; 1
+ 5c4:	50 40       	sbci	r21, 0x00	; 0
  5c6:	60 40       	sbci	r22, 0x00	; 0
- 5c8:	70 40       	sbci	r23, 0x00	; 0
- 5ca:	e1 f7       	brne	.-8      	; 0x5c4 <main+0x11a>
- 5cc:	00 c0       	rjmp	.+0      	; 0x5ce <main+0x124>
- 5ce:	00 00       	nop
- 5d0:	90 93 0d 02 	sts	0x020D, r25	; 0x80020d <direction>
- 5d4:	5f ef       	ldi	r21, 0xFF	; 255
- 5d6:	63 e2       	ldi	r22, 0x23	; 35
- 5d8:	74 ef       	ldi	r23, 0xF4	; 244
- 5da:	51 50       	subi	r21, 0x01	; 1
+ 5c8:	e1 f7       	brne	.-8      	; 0x5c2 <main+0x118>
+ 5ca:	00 c0       	rjmp	.+0      	; 0x5cc <main+0x122>
+ 5cc:	00 00       	nop
+ 5ce:	20 93 0d 02 	sts	0x020D, r18	; 0x80020d <direction>
+ 5d2:	4f ef       	ldi	r20, 0xFF	; 255
+ 5d4:	53 e2       	ldi	r21, 0x23	; 35
+ 5d6:	64 ef       	ldi	r22, 0xF4	; 244
+ 5d8:	41 50       	subi	r20, 0x01	; 1
+ 5da:	50 40       	sbci	r21, 0x00	; 0
  5dc:	60 40       	sbci	r22, 0x00	; 0
- 5de:	70 40       	sbci	r23, 0x00	; 0
- 5e0:	e1 f7       	brne	.-8      	; 0x5da <main+0x130>
- 5e2:	00 c0       	rjmp	.+0      	; 0x5e4 <main+0x13a>
- 5e4:	00 00       	nop
- 5e6:	80 93 0d 02 	sts	0x020D, r24	; 0x80020d <direction>
- 5ea:	5f ef       	ldi	r21, 0xFF	; 255
- 5ec:	63 e2       	ldi	r22, 0x23	; 35
- 5ee:	74 ef       	ldi	r23, 0xF4	; 244
- 5f0:	51 50       	subi	r21, 0x01	; 1
+ 5de:	e1 f7       	brne	.-8      	; 0x5d8 <main+0x12e>
+ 5e0:	00 c0       	rjmp	.+0      	; 0x5e2 <main+0x138>
+ 5e2:	00 00       	nop
+ 5e4:	90 93 0d 02 	sts	0x020D, r25	; 0x80020d <direction>
+ 5e8:	4f ef       	ldi	r20, 0xFF	; 255
+ 5ea:	53 e2       	ldi	r21, 0x23	; 35
+ 5ec:	64 ef       	ldi	r22, 0xF4	; 244
+ 5ee:	41 50       	subi	r20, 0x01	; 1
+ 5f0:	50 40       	sbci	r21, 0x00	; 0
  5f2:	60 40       	sbci	r22, 0x00	; 0
- 5f4:	70 40       	sbci	r23, 0x00	; 0
- 5f6:	e1 f7       	brne	.-8      	; 0x5f0 <main+0x146>
- 5f8:	00 c0       	rjmp	.+0      	; 0x5fa <main+0x150>
- 5fa:	00 00       	nop
- 5fc:	d2 cf       	rjmp	.-92     	; 0x5a2 <main+0xf8>
+ 5f4:	e1 f7       	brne	.-8      	; 0x5ee <main+0x144>
+ 5f6:	00 c0       	rjmp	.+0      	; 0x5f8 <main+0x14e>
+ 5f8:	00 00       	nop
+ 5fa:	80 93 0d 02 	sts	0x020D, r24	; 0x80020d <direction>
+ 5fe:	4f ef       	ldi	r20, 0xFF	; 255
+ 600:	53 e2       	ldi	r21, 0x23	; 35
+ 602:	64 ef       	ldi	r22, 0xF4	; 244
+ 604:	41 50       	subi	r20, 0x01	; 1
+ 606:	50 40       	sbci	r21, 0x00	; 0
+ 608:	60 40       	sbci	r22, 0x00	; 0
+ 60a:	e1 f7       	brne	.-8      	; 0x604 <main+0x15a>
+ 60c:	00 c0       	rjmp	.+0      	; 0x60e <main+0x164>
+ 60e:	00 00       	nop
+ 610:	d3 cf       	rjmp	.-90     	; 0x5b8 <main+0x10e>
 
-000005fe <_exit>:
- 5fe:	f8 94       	cli
+00000612 <_exit>:
+ 612:	f8 94       	cli
 
-00000600 <__stop_program>:
- 600:	ff cf       	rjmp	.-2      	; 0x600 <__stop_program>
+00000614 <__stop_program>:
+ 614:	ff cf       	rjmp	.-2      	; 0x614 <__stop_program>
