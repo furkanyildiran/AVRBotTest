@@ -20,7 +20,11 @@ main.d main.o: .././main.c \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\pgmspace.h \
  ../PCD8544/pcd8544_mnemonics.h ../SPI_custom/spi_custom.h \
- ../GPIO/gpio_custom.h ../A4988/stepper.h ../A4988/stepper_config.h
+ ../GPIO/gpio_custom.h ../A4988/stepper.h ../A4988/stepper_config.h \
+ ../Task/task.h \
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\atomic.h \
+ ../nRF24L01/nrf24l01.h ../nRF24L01/nRF24L01_config.h \
+ ../nRF24L01/nRF24L01_mnemonics.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h:
 
@@ -71,3 +75,13 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 ../A4988/stepper.h:
 
 ../A4988/stepper_config.h:
+
+../Task/task.h:
+
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\atomic.h:
+
+../nRF24L01/nrf24l01.h:
+
+../nRF24L01/nRF24L01_config.h:
+
+../nRF24L01/nRF24L01_mnemonics.h:
