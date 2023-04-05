@@ -106,6 +106,9 @@
       <Value>../SPI_custom</Value>
       <Value>../Task</Value>
       <Value>../nRF24L01</Value>
+      <Value>../QMC5883L</Value>
+      <Value>../KALMAN</Value>
+      <Value>../TWI</Value>
     </ListValues>
   </avrgcc.compiler.directories.IncludePaths>
   <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
@@ -141,6 +144,12 @@
     <Compile Include="GPIO\gpio_custom.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="KALMAN\kalman_filter.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="KALMAN\kalman_filter.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
@@ -165,6 +174,12 @@
     <Compile Include="PCD8544\pcd8544_mnemonics.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="QMC5883L\qmc5883l.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="QMC5883L\qmc5883l.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="SPI_custom\spi_custom.c">
       <SubType>compile</SubType>
     </Compile>
@@ -177,10 +192,22 @@
     <Compile Include="Task\task.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="TWI\twi.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="TWI\twi.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="TWI\twi_registers.h">
+      <SubType>compile</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="A4988" />
     <Folder Include="GPIO" />
+    <Folder Include="KALMAN" />
+    <Folder Include="TWI" />
+    <Folder Include="QMC5883L" />
     <Folder Include="nRF24L01" />
     <Folder Include="Task" />
     <Folder Include="PCD8544" />

@@ -13,17 +13,31 @@
 #include "stepper.h"
 #include "task.h"
 #include "nrf24l01.h"
+#include "qmc5883l.h"
 #include <util/atomic.h>
+#include <stdlib.h>
 
 char buff[20]="\0";
 uint8_t nrfbuff[5]={0};
 uint32_t prevTime;
 uint8_t pipe[5]={0x00,0x00,0x00,0x00,0x01};
+/*
 void PCF_Task(void){
 	prevTime = getMs();
 	if((prevTime%3000)==0){
 		sprintf(buff,"%ld",prevTime);
 		PCD_text(buff,0,LINE_2);
+	}
+	qmc_read_axis();
+	int16_t x = qmc_getx();
+	int16_t y = qmc_gety();
+	float heading = atan2((double)y,(double)x)*180.0/3.14;
+	heading = (heading < 0)? 360 + heading:heading;
+	if((prevTime%300)==0){
+		PCD_clear(0,45,LINE_3);
+		
+		sprintf(buff,"%d",(int)heading);
+		PCD_text(buff,0,LINE_3);
 	}	
 }
 void Nrf_Task(void){
@@ -39,40 +53,49 @@ void Nrf_Task(void){
 		else if(nrfbuff[0]==8)A4988_right();
 		else if(nrfbuff[0]==16)A4988_stop();
 	}
+}*/
+int16_t getHeading(void){
+	qmc_read_axis();
+	int16_t x = qmc_getx();
+	int16_t y = qmc_gety();
+	float heading = atan2((double)y,(double)x)*180.0/3.14;
+	return (int16_t)((heading < 0)? 360 + heading:heading);
 }
 
+int flag=0;
 int main(void)
 {
 	SPI_master_init(SPI_SCK_DVDR16);
+	twi_master_init(200000);
 	PCD_init((volatile uint8_t *const)GPIO_PORTL_ADDR, 5, 7, 6);
 	PCD_contrast(65);
 	PCD_text("HELLO",0,LINE_0);
 	PCD_text("WORLD",0,LINE_1);
 
 	A4988_init();
-	A4988_stop();
+	
 	TCCR1B |= (1 << WGM12) | (1 << CS11) | (1 << CS10);
 	TIMSK1 |= (1 << OCIE1A);
 	OCR0A=120;
 	OCR1A=249;
-	
-	A4988_stop();
-	Task_add(PCF_Task);
-	Task_add(Nrf_Task);
 	nRF24L01_init((volatile uint8_t*)GPIO_PORTG_ADDR,0,1);
 	nRF24L01_open_pipe(PIPE_0, pipe, 108, PA_LEVEL_MAX);
 	nRF24L01_data_rate(DEFAULT_DR_1Mbps);
+	qmc_init(QMC_OSR_64,QMC_RNG_2G,QMC_ODR_50HZ,QMC_DSBL_INTRPT);
+	PCD_clear_all();
 	sei();
-	/*DDRA=0x00;
-	PORTA=0XFF;
-	DDRB=0xff;
-	nRF24L01_init((volatile uint8_t*)GPIO_PORTG_ADDR,0,1);
-	nRF24L01_open_pipe(PIPE_0, pipe, 108, PA_LEVEL_MAX);
-	nRF24L01_data_rate(DEFAULT_DR_1Mbps);*/
+	A4988_forward(30);
     while (1) 
     {
-		
-		
+		/*sprintf(buff,"OC : %d",OCR0A);
+		PCD_text(buff,0,LINE_0);
+		sprintf(buff,"PC : %ld",pulse_counter);
+		PCD_text(buff,0,LINE_1);
+		sprintf(buff,"TP : %ld",target_pulse_counter);
+		PCD_text(buff,0,LINE_2);
+		_delay_ms(300);
+		PCD_clear_all();
+		if(flag){PCD_text("1",0,LINE_3);}*/
 		/*uint8_t val[1]={0};
 		val[0]=PINA;
 		if((PINA&1)==0){val[0] = 1; nRF24L01_transmit(val,1);}
@@ -80,8 +103,7 @@ int main(void)
 		else if((PINA&4)==0){val[0] = 4; nRF24L01_transmit(val,1);}
 		else if((PINA&8)==0){val[0] = 8; nRF24L01_transmit(val,1);PORTB=0xff;}
 		else if((PINA&128)==0){val[0] = 16; nRF24L01_transmit(val,1); PORTB=0xff;}else PORTB=0;*/
-		
-		
+	
     }
 }
 

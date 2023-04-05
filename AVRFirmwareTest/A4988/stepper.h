@@ -16,16 +16,12 @@
 #define A4988_771_Hz 161
 #define A4988_833_Hz 149
 
-
-/*
-#define A4988_490_Hz 100
-#define A4988_555_Hz 225	//1.8ms period
-#define A4988_588_Hz 211	//1.7ms period
-#define A4988_625_Hz 49	//1.6ms period
-#define A4988_666_Hz 46	//1.5ms period
-#define A4988_714_Hz 43	//1.4ms period
-#define A4988_781_Hz 39
-#define A4988_844_Hz 36*/
+//wheel
+#define Circumference 22 //cm
+#define radius 3.5
+//vehicle
+//60cm
+//9.5 cm
 
 
 #define A4988_SPEED_LEVEL1() do{OCR0A = A4988_490_Hz;}while(0)
@@ -91,7 +87,7 @@ typedef enum{
 
 
 void A4988_init(void);
-void A4988_forward(void);
+void A4988_forward(uint8_t distance);
 void A4988_backward(void);
 void A4988_left(void);
 void A4988_right(void);

@@ -24,7 +24,9 @@ main.d main.o: .././main.c \
  ../Task/task.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\atomic.h \
  ../nRF24L01/nrf24l01.h ../nRF24L01/nRF24L01_config.h \
- ../nRF24L01/nRF24L01_mnemonics.h
+ ../nRF24L01/nRF24L01_mnemonics.h ../QMC5883L/qmc5883l.h ../TWI/twi.h \
+ ../TWI/twi_registers.h ../KALMAN/kalman_filter.h \
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h:
 
@@ -85,3 +87,13 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 ../nRF24L01/nRF24L01_config.h:
 
 ../nRF24L01/nRF24L01_mnemonics.h:
+
+../QMC5883L/qmc5883l.h:
+
+../TWI/twi.h:
+
+../TWI/twi_registers.h:
+
+../KALMAN/kalman_filter.h:
+
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h:
