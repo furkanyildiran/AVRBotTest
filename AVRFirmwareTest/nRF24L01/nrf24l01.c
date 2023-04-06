@@ -79,7 +79,7 @@ void nRF24L01_open_pipe(uint8_t pipe, uint8_t *pipe_addr, uint8_t channel, uint8
 	
 	for(uint8_t i = 0; i < ADDRESS_WIDTH; i++)
 	pipe_address[i] = pipe_addr[i];
-	transfer_data(W_REGISTER(RX_ADDR_P0_REG_ADDR + selected_pipe), pipe_address, 5);
+	transfer_data(W_REGISTER((RX_ADDR_P0_REG_ADDR + selected_pipe)), pipe_address, 5);
 	
 	for(uint8_t i = 0; i < ADDRESS_WIDTH; i++)
 	pipe_address[i] = pipe_addr[i];

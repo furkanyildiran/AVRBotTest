@@ -3,35 +3,12 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <math.h>
+#include <util/atomic.h>
 #include "stepper_config.h"
 #include "gpio_custom.h"
-#include "task.h"
-
-#define A4988_490_Hz 255
-#define A4988_555_Hz 225	//1.8ms period
-#define A4988_588_Hz 211	//1.7ms period
-#define A4988_625_Hz 199	//1.6ms period
-#define A4988_666_Hz 187	//1.5ms period
-#define A4988_714_Hz 174	//1.4ms period
-#define A4988_771_Hz 161
-#define A4988_833_Hz 149
-
-//wheel
-#define Circumference 22 //cm
-#define radius 3.5
-//vehicle
-//60cm
-//9.5 cm
-
-
-#define A4988_SPEED_LEVEL1() do{OCR0A = A4988_490_Hz;}while(0)
-#define A4988_SPEED_LEVEL2() do{OCR0A = A4988_555_Hz;}while(0)
-#define A4988_SPEED_LEVEL3() do{OCR0A = A4988_588_Hz;}while(0)
-#define A4988_SPEED_LEVEL4() do{OCR0A = A4988_625_Hz;}while(0)
-#define A4988_SPEED_LEVEL5() do{OCR0A = A4988_666_Hz;}while(0)
-#define A4988_SPEED_LEVEL6() do{OCR0A = A4988_714_Hz;}while(0)
-#define A4988_SPEED_LEVEL7() do{OCR0A = A4988_771_Hz;}while(0)
-#define A4988_SPEED_LEVEL8() do{OCR0A = A4988_833_Hz;}while(0)	
+#include "pcd8544.h"
 
 #define R_DDR_VAL			((1 << R_dir_pin)|(1 << R_sleep_pin)|(1 << R_step_pin))
 #define L_DDR_VAL			((1 << L_dir_pin)|(1 << L_sleep_pin)|(1 << L_step_pin))
@@ -50,23 +27,19 @@
 #define STEP_PULSE()		do{R_A4988_PORT ^= (1 << R_step_pin); L_A4988_PORT ^= (1 << L_step_pin);}while(0)
 #define CHIP_SLEEP()		do{R_OFF(); L_OFF();}while(0)
 #define CHIP_ACTIVE_FUNC()	do{R_ON(); L_ON();}while(0)
-
-/*
-#define FORWARD_DIRECTION()		do{CHIP_ACTIVE_FUNC(); GPIO_CLEAR_PIN(R_A4988_PORT, R_dir_pin); GPIO_CLEAR_PIN(L_A4988_PORT, L_dir_pin);}while(0)
-#define BACKWARD_DIRECTION()	do{CHIP_ACTIVE_FUNC(); GPIO_SET_PIN(R_A4988_PORT, R_dir_pin);   GPIO_SET_PIN(L_A4988_PORT, L_dir_pin);}while(0)
-#define RIGHT_DIRECTION()		do{CHIP_ACTIVE_FUNC(); GPIO_SET_PIN(R_A4988_PORT, R_dir_pin);   GPIO_CLEAR_PIN(L_A4988_PORT, L_dir_pin);}while(0)
-#define LEFT_DIRECTION()		do{CHIP_ACTIVE_FUNC(); GPIO_CLEAR_PIN(R_A4988_PORT, R_dir_pin); GPIO_SET_PIN(L_A4988_PORT, L_dir_pin);}while(0)
-#define	STOP_DIRECTION()		do{CHIP_SLEEP();}while(0)*/
 	
 #define MS1andMS2_maskVal	0b01011111
 
 typedef enum{
-	STOP,
-	FORWARD,
-	LEFT,
-	RIGHT,
-	BACKWARD
-}Directions_t;
+	ACCELARATION,
+	CONSTANT_SPEED,
+	DECELARATION
+}SPEED_STATE_t;
+
+typedef enum{
+	NOT_MOVED,
+	MOVED
+}MOVEMENT_FLAG_t;
 
 typedef enum{
 	MS0,
@@ -87,11 +60,11 @@ typedef enum{
 
 
 void A4988_init(void);
-void A4988_forward(uint8_t distance);
-void A4988_backward(void);
-void A4988_left(void);
-void A4988_right(void);
-void A4988_stop();
+void A4988_forward(uint16_t distance);
+void A4988_backward(uint16_t distance);
+void A4988_left(uint16_t degree);
+void A4988_right(uint16_t degree);
+MOVEMENT_FLAG_t A4988_movementControl(void);
 void A4988_setSpeed();
 void A4988_setMs(MicroStep_t ms);
 void A4988_task(void);

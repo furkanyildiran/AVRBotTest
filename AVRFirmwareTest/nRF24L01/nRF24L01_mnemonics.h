@@ -64,7 +64,7 @@ extern "C"{
 	#define TX_DS               5
 	#define MAX_RT				4
 	#define RX_P_NO				1
-	#define TX_FULL             0
+	#define TX_FULL		        0
 
 	#define OBSERVE_TX_ADDR     0x08
 	#define PLOS_CNT            4
@@ -90,7 +90,7 @@ extern "C"{
 
 	#define FIFO_STATS_REG_ADDR 0x17
 	#define TX_REUSE			6
-	#define TX_FULL				5
+	#define TX_FULL_FS			5
 	#define TX_EMPTY			4
 	#define RX_FULL				1
 	#define RX_EMPTY			0

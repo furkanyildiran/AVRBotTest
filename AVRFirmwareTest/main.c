@@ -76,15 +76,14 @@ int main(void)
 	
 	TCCR1B |= (1 << WGM12) | (1 << CS11) | (1 << CS10);
 	TIMSK1 |= (1 << OCIE1A);
-	OCR0A=120;
 	OCR1A=249;
 	nRF24L01_init((volatile uint8_t*)GPIO_PORTG_ADDR,0,1);
 	nRF24L01_open_pipe(PIPE_0, pipe, 108, PA_LEVEL_MAX);
 	nRF24L01_data_rate(DEFAULT_DR_1Mbps);
 	qmc_init(QMC_OSR_64,QMC_RNG_2G,QMC_ODR_50HZ,QMC_DSBL_INTRPT);
-	PCD_clear_all();
+	
 	sei();
-	A4988_forward(30);
+	PCD_clear_all();
     while (1) 
     {
 		/*sprintf(buff,"OC : %d",OCR0A);
@@ -103,7 +102,15 @@ int main(void)
 		else if((PINA&4)==0){val[0] = 4; nRF24L01_transmit(val,1);}
 		else if((PINA&8)==0){val[0] = 8; nRF24L01_transmit(val,1);PORTB=0xff;}
 		else if((PINA&128)==0){val[0] = 16; nRF24L01_transmit(val,1); PORTB=0xff;}else PORTB=0;*/
-	
+		A4988_forward(300);
+		while(A4988_movementControl()!=MOVED);
+		PCD_text("moved",0,LINE_0);
+		A4988_backward(300);
+		while(A4988_movementControl()!=MOVED);
+		A4988_left(90);
+		while(A4988_movementControl()!=MOVED);
+		A4988_right(90);
+		while(2);
     }
 }
 

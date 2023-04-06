@@ -1,64 +1,59 @@
 #include "stepper.h"
-#include "pcd8544.h"
+#include <string.h>
 #include <stdio.h>
-#include <math.h>
-#define A4988_TASK_DELAY 10
-#define CM_PER_64PULSE	0.3434375
-static Directions_t current_dir=STOP, previous_dir=STOP;
 
-static void forward(void);
-static void backward(void);
-static void right(void);
-static void left(void);
-static void stop(void);
-static void setDirection(void);
-void A4988_task(void);
+#define PI										3.14159f
+#define RadiusOfWheel							3.5f								
+#define RadiusOfVehicle							9.5f								
+#define CircumferenceOfWheel					(float)(2*PI*RadiusOfWheel)			
+#define CircumferenceOfVehicle					(float)(2*PI*RadiusOfVehicle)			
+#define CalculateArcLength(degree, radius)		(float)((2.0*PI*radius*degree)/360)
+/*per 64 pulse is 5.625 degrees*/
+#define DegressPer64Pulse						5.625f
+#define PulsePer5degress625						64.0f
+#define DistancePer64Pulse						(float)(CalculateArcLength(DegressPer64Pulse, RadiusOfWheel))				
 
-volatile uint32_t pulseCounter, targetPulse;
-typedef enum{
-	State1,
-	State2,
-	State3	
-}states;
-states state = State1;
-char data[20]={"\0"};
+#define STEP_PULSE_DELAY			10
+#define OCR0A_MIN_VAL				36			/*top speed 844Hz*/
+#define OCR0A_MAX_VAL				120			/*lower speed 258Hz*/
+#define DIFF_OCROA_MINMAX			(OCR0A_MAX_VAL-OCR0A_MIN_VAL)
+#define TIMER0_COMPA_INT_DSBL()		(TIMSK0 &=~(1 << OCIE0A))
+#define TIMER0_COMPA_INT_EN()		(TIMSK0 |= (1 << OCIE0A))
+#define CLEAR_COUNTERS()			do{pulseCounter=0; targetPulse=0;}while(0)
+
+static volatile uint32_t pulseCounter, targetPulse;
+static volatile SPEED_STATE_t speed_state = ACCELARATION;
+static volatile MOVEMENT_FLAG_t movement_flag = NOT_MOVED;
+
 ISR(TIMER0_COMPA_vect){
 	STEP_PULSE();
 	pulseCounter++;
-
-	if(state==State1){
-		if ((pulseCounter%10)==0 && (OCR0A > 36)){
+	switch(speed_state){
+		case ACCELARATION:
+			if (!(pulseCounter%STEP_PULSE_DELAY) && (OCR0A > OCR0A_MIN_VAL))
 			OCR0A--;
-		}else if(OCR0A==36){
-			state=State2;
-			sprintf(data,"%ld",pulseCounter);
-			PCD_text(data,0,LINE_0);
-		}
-	}
-	else if(state==State2){
-		if(pulseCounter >= (targetPulse-10*84))state=State3;
-	}
-	else if(state==State3){
-		if((pulseCounter%10)==0 && (OCR0A < 120)){
-			OCR0A++;
-		}else if(OCR0A==120){
-			TIMSK0 &= ~(1 << OCIE0A);
-			CHIP_SLEEP();
-			targetPulse = 0;
-			pulseCounter = 0;
-		}
+			else if(OCR0A==OCR0A_MIN_VAL)
+			speed_state=CONSTANT_SPEED;
+			break;
+		case CONSTANT_SPEED:
+			if(pulseCounter >= (targetPulse-STEP_PULSE_DELAY*DIFF_OCROA_MINMAX))
+			speed_state=DECELARATION;
+			break;
+		case DECELARATION:
+			if((pulseCounter%STEP_PULSE_DELAY)==0 && (OCR0A < OCR0A_MAX_VAL))
+				OCR0A++;
+			else if(OCR0A==OCR0A_MAX_VAL){
+				TIMER0_COMPA_INT_DSBL();
+				CHIP_SLEEP();
+				CLEAR_COUNTERS();
+				speed_state=ACCELARATION;
+				movement_flag=MOVED;
+			}
+			break;
+		default:break;
 	}
 }
-uint32_t A4988_getTargetPulseCounter(void){
-	return targetPulse;
-}
-uint32_t A4988_getPulse(void){
-	uint32_t temp=0; 
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
-		temp = pulseCounter;
-	}
-	return temp;
-}
+
 void A4988_init(void){
 	GPIO_SET_REG(R_A4988_DDR, R_DDR_VAL);
 	GPIO_SET_REG(L_A4988_DDR, L_DDR_VAL);
@@ -68,31 +63,49 @@ void A4988_init(void){
 	GPIO_SET_REG(L_MS3_DDR, L_MS3_pin);
 	TCCR0A = TIMER0_CTC_MODE;
 	TCCR0B = TIMER0_PRESCALER_256;
-	
-	A4988_SPEED_LEVEL8();
-	Task_add(A4988_task);
+	OCR0A = OCR0A_MAX_VAL;/*lowest speed*/	
 }
-void A4988_stop(void){
-	CHIP_SLEEP();
-}
-void A4988_forward(uint8_t distance){
+void A4988_forward(uint16_t distance){
+	movement_flag=NOT_MOVED;
 	CHIP_ACTIVE_FUNC();
-	float ratio = (float)(distance/CM_PER_64PULSE);
-	targetPulse = (uint32_t)round(ratio*64);
-	current_dir = FORWARD;
-	pulseCounter=0;
-	TIMSK0 |= TIMER0_INT_ENBL;
+	GPIO_CLEAR_PIN(R_A4988_PORT, R_dir_pin);
+	GPIO_CLEAR_PIN(L_A4988_PORT, L_dir_pin);
+	float ratio = (float)(distance/DistancePer64Pulse);
+	targetPulse = (uint32_t)round(ratio*PulsePer5degress625);
+	TIMER0_COMPA_INT_EN();
 }
-void A4988_backward(void){
-	
+void A4988_backward(uint16_t distance){
+	movement_flag=NOT_MOVED;
+	CHIP_ACTIVE_FUNC();
+	GPIO_SET_PIN(R_A4988_PORT, R_dir_pin);
+	GPIO_SET_PIN(L_A4988_PORT, L_dir_pin);
+	float ratio = (float)(distance/DistancePer64Pulse);
+	targetPulse = (uint32_t)round(ratio*PulsePer5degress625);
+	TIMER0_COMPA_INT_EN();
 }
-void A4988_left(void){
-	
+void A4988_left(uint16_t degree){
+	movement_flag=NOT_MOVED;
+	CHIP_ACTIVE_FUNC();
+	GPIO_CLEAR_PIN(R_A4988_PORT, R_dir_pin);
+	GPIO_SET_PIN(L_A4988_PORT, L_dir_pin);
+	float distance = (float)CalculateArcLength(degree,RadiusOfVehicle);
+	float ratio = (float)(distance/DistancePer64Pulse);
+	targetPulse = (uint32_t)round(ratio*PulsePer5degress625);
+	TIMER0_COMPA_INT_EN();
 }
-void A4988_right(void){
-	
+void A4988_right(uint16_t degree){
+	movement_flag=NOT_MOVED;
+	CHIP_ACTIVE_FUNC();
+	GPIO_SET_PIN(R_A4988_PORT, R_dir_pin);
+	GPIO_CLEAR_PIN(L_A4988_PORT, L_dir_pin);
+	float distance = (float)CalculateArcLength(degree,RadiusOfVehicle);
+	float ratio = (float)(distance/DistancePer64Pulse);
+	targetPulse = (uint32_t)round(ratio*PulsePer5degress625);
+	TIMER0_COMPA_INT_EN();
 }
-
+MOVEMENT_FLAG_t A4988_movementControl(void){
+	return movement_flag;
+}
 void A4988_setMs(MicroStep_t ms){
 	if(ms<MS4){
 		GPIO_CLEAR_PIN(L_MS3_PORT, L_MS3_pin);
@@ -109,26 +122,3 @@ void A4988_setMs(MicroStep_t ms){
 	L_MS1_and_MS2_PORT = temp;
 }
 
-static void forward(void){
-	CHIP_ACTIVE_FUNC();
-	GPIO_CLEAR_PIN(R_A4988_PORT, R_dir_pin);
-	GPIO_CLEAR_PIN(L_A4988_PORT, L_dir_pin);
-}
-static void backward(void){
-	CHIP_ACTIVE_FUNC();
-	GPIO_SET_PIN(R_A4988_PORT, R_dir_pin);
-	GPIO_SET_PIN(L_A4988_PORT, L_dir_pin);
-}
-static void right(void){
-	CHIP_ACTIVE_FUNC();
-	GPIO_SET_PIN(R_A4988_PORT, R_dir_pin);
-	GPIO_CLEAR_PIN(L_A4988_PORT, L_dir_pin);
-}
-static void left(void){
-	CHIP_ACTIVE_FUNC();
-	GPIO_CLEAR_PIN(R_A4988_PORT, R_dir_pin);
-	GPIO_SET_PIN(L_A4988_PORT, L_dir_pin);
-}
-static void stop(void){
-	
-}
