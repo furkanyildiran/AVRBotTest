@@ -22,3 +22,8 @@ LCD pins:
 RST : PL7  
 CE : PL6  
 DC : PL5
+HC05 pins:
+UART1
+Servo pins: (Source voltage is 5v regulated external battery)
+Header1 : PB5
+Header2 : PB6
