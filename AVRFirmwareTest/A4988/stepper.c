@@ -103,6 +103,15 @@ void A4988_right(uint16_t degree){
 	targetPulse = (uint32_t)round(ratio*PulsePer5degress625);
 	TIMER0_COMPA_INT_EN();
 }
+
+void A4988_stop(void){
+	speed_state = DECELARATION;
+}
+
+uint16_t A4988_getDistance(void){
+	return ((pulseCounter/PulsePer5degress625)*DistancePer64Pulse);
+}
+
 MOVEMENT_FLAG_t A4988_movementControl(void){
 	return movement_flag;
 }

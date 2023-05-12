@@ -64,6 +64,8 @@ void A4988_forward(uint16_t distance);
 void A4988_backward(uint16_t distance);
 void A4988_left(uint16_t degree);
 void A4988_right(uint16_t degree);
+void A4988_stop(void);
+uint16_t A4988_getDistance(void);
 MOVEMENT_FLAG_t A4988_movementControl(void);
 void A4988_setSpeed();
 void A4988_setMs(MicroStep_t ms);
