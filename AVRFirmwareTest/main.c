@@ -8,12 +8,14 @@
 #include <avr/io.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "pcd8544.h"
 #include "gpio_custom.h"
 #include "stepper.h"
 #include "task.h"
 #include "nrf24l01.h"
 #include "qmc5883l.h"
+#include "usart.h"
 #include <util/atomic.h>
 #include <stdlib.h>
 
@@ -65,16 +67,17 @@ int16_t getHeading(void){
 int flag=0;
 int main(void)
 {
+	
 	SPI_master_init(SPI_SCK_DVDR16);
 	//twi_master_init(200000);
 	PCD_init((volatile uint8_t *const)GPIO_PORTL_ADDR, 5, 7, 6);
 	PCD_contrast(65);
-	
+	USART_init(9600,USART_CHAR_SIZE8);
 	A4988_init();
 	
-	/*TCCR1B |= (1 << WGM12) | (1 << CS11) | (1 << CS10);
+	TCCR1B |= (1 << WGM12) | (1 << CS11) | (1 << CS10);
 	TIMSK1 |= (1 << OCIE1A);
-	OCR1A=249;*/
+	OCR1A=249;
 	/*nRF24L01_init((volatile uint8_t*)GPIO_PORTG_ADDR,0,1);
 	nRF24L01_open_pipe(PIPE_0, pipe, 108, PA_LEVEL_MAX);
 	nRF24L01_data_rate(DEFAULT_DR_1Mbps);
@@ -82,8 +85,47 @@ int main(void)
 	*/
 	sei();
 	PCD_clear_all();
+	char data[30]={"\0"};
+	char pos[30]={"\0"};
+		
     while (1) 
     {
+		while(1){
+			if(USART_available()){
+				uint8_t byte = USART_receive();
+				switch(byte){
+					case '0':
+						A4988_stop();
+						break;
+					case '1':
+						A4988_forward(1);
+						break;
+					case '2':
+						A4988_backward(1);
+						break;
+					case '3':
+						A4988_left(10);
+						break;
+					case '4':
+						A4988_right(10);
+						break;
+					case '5':
+						A4988_left(5);
+						break;
+					case '6':
+						A4988_right(5);
+						break;
+					case '7':
+						A4988_left(180);
+						break;
+					case '8':
+						A4988_right(180);
+					break;
+					default:break;							
+				}
+			}
+		}
+		
 		/*sprintf(buff,"OC : %d",OCR0A);
 		PCD_text(buff,0,LINE_0);
 		sprintf(buff,"PC : %ld",pulse_counter);
@@ -100,7 +142,7 @@ int main(void)
 		else if((PINA&4)==0){val[0] = 4; nRF24L01_transmit(val,1);}
 		else if((PINA&8)==0){val[0] = 8; nRF24L01_transmit(val,1);PORTB=0xff;}
 		else if((PINA&128)==0){val[0] = 16; nRF24L01_transmit(val,1); PORTB=0xff;}else PORTB=0;*/
-		A4988_forward(15);
+		/*A4988_forward(15);
 		while(A4988_movementControl()!=MOVED){
 			sprintf(buff,"%d",A4988_getDistance());
 			PCD_text(buff,0,LINE_3);
@@ -114,7 +156,7 @@ int main(void)
 		A4988_left(90);
 		while(A4988_movementControl()!=MOVED);
 		A4988_right(90);
-		while(2);
+		while(2);*/
     }
 }
 

@@ -20,3 +20,5 @@ Task\task.c
 
 TWI\twi.c
 
+USART\usart.c
+
