@@ -4,6 +4,8 @@
 
 A4988\stepper.c
 
+HCSR04\hcsr04.c
+
 KALMAN\kalman_filter.c
 
 main.c

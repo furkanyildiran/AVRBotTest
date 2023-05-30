@@ -20,6 +20,9 @@ extern "C"{
 #define USART_PARITY_EVEN 0b10
 #define USART_open()   ()
 
+#define USART_RX_INT_ENBL   (UCSR1B|=(1<<RXCIE1))//not used yet
+#define USART_RX_INT_DSBL   (UCSR1B&=~(1<<RXCIE1))//not used yet
+
 void USART_init(uint32_t baudrate, uint8_t char_size);
 void USART_transmit(uint8_t data[],uint8_t size);
 uint8_t USART_receive(void);

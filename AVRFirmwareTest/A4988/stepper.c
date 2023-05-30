@@ -93,7 +93,7 @@ void A4988_backward(uint16_t distance){
 	TIMER0_COMPA_INT_EN();
 }
 
-void A4988_left(uint16_t degree){
+void A4988_right(uint16_t degree){
 	movement_flag=NOT_MOVED;
 	CHIP_ACTIVE_FUNC();
 	GPIO_CLEAR_PIN(R_A4988_PORT, R_dir_pin);
@@ -105,7 +105,7 @@ void A4988_left(uint16_t degree){
 	TIMER0_COMPA_INT_EN();
 }
 
-void A4988_right(uint16_t degree){
+void A4988_left(uint16_t degree){
 	movement_flag=NOT_MOVED;
 	CHIP_ACTIVE_FUNC();
 	GPIO_SET_PIN(R_A4988_PORT, R_dir_pin);

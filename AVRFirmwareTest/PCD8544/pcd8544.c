@@ -109,7 +109,7 @@ static __attribute__((always_inline)) void reset(void);
 static void send_command(uint8_t command);
 static void send_data(uint8_t data);
 
-static __attribute__((always_inline)) void reset(void){
+static __attribute__((always_inline)) inline void reset(void){
 	RST_PIN_LOW();
 	_delay_ms(res_low_pulse_width);
 	RST_PIN_HIGH();

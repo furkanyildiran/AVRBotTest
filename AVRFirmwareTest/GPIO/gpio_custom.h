@@ -4,6 +4,7 @@ extern "C"{
 
 	#ifndef GPIO_CUSTOM_H_
 	#define GPIO_CUSTOM_H_
+	#include <stdint.h>
 	#define GPIO_PIN_ADDR_OFFSET -2
 	#define GPIO_DDR_ADDR_OFFSET -1
 

@@ -26,7 +26,9 @@ main.d main.o: .././main.c \
  ../A4988/stepper_config.h ../Task/task.h ../nRF24L01/nrf24l01.h \
  ../nRF24L01/nRF24L01_config.h ../nRF24L01/nRF24L01_mnemonics.h \
  ../QMC5883L/qmc5883l.h ../TWI/twi.h ../TWI/twi_registers.h \
- ../KALMAN/kalman_filter.h ../USART/usart.h
+ ../KALMAN/kalman_filter.h ../USART/usart.h ../HCSR04/hcsr04.h \
+ ../HCSR04/hcsr04_config.h \
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h:
 
@@ -99,3 +101,9 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 ../KALMAN/kalman_filter.h:
 
 ../USART/usart.h:
+
+../HCSR04/hcsr04.h:
+
+../HCSR04/hcsr04_config.h:
+
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h:

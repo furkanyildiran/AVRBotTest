@@ -16,8 +16,11 @@
 #include "nrf24l01.h"
 #include "qmc5883l.h"
 #include "usart.h"
+#include "hcsr04.h"
 #include <util/atomic.h>
 #include <stdlib.h>
+#include <string.h>
+
 
 char buff[20]="\0";
 uint8_t nrfbuff[5]={0};
@@ -64,7 +67,11 @@ int16_t getHeading(void){
 	return (int16_t)((heading < 0)? 360 + heading:heading);
 }
 
-int flag=0;
+
+	
+
+
+
 int main(void)
 {
 	
@@ -85,78 +92,17 @@ int main(void)
 	*/
 	sei();
 	PCD_clear_all();
-	char data[30]={"\0"};
-	char pos[30]={"\0"};
-		
+	HCSR04_init();
     while (1) 
     {
-		while(1){
-			if(USART_available()){
-				uint8_t byte = USART_receive();
-				switch(byte){
-					case '0':
-						A4988_stop();
-						break;
-					case '1':
-						A4988_forward(1);
-						break;
-					case '2':
-						A4988_backward(1);
-						break;
-					case '3':
-						A4988_left(10);
-						break;
-					case '4':
-						A4988_right(10);
-						break;
-					case '5':
-						A4988_left(5);
-						break;
-					case '6':
-						A4988_right(5);
-						break;
-					case '7':
-						A4988_left(180);
-						break;
-					case '8':
-						A4988_right(180);
-					break;
-					default:break;							
-				}
-			}
-		}
 		
-		/*sprintf(buff,"OC : %d",OCR0A);
-		PCD_text(buff,0,LINE_0);
-		sprintf(buff,"PC : %ld",pulse_counter);
-		PCD_text(buff,0,LINE_1);
-		sprintf(buff,"TP : %ld",target_pulse_counter);
-		PCD_text(buff,0,LINE_2);
-		_delay_ms(300);
+		uint16_t distance = HCSR04_measure();
+		char buff[10]={"\0"};
+		sprintf(buff,"%d",distance);
 		PCD_clear_all();
-		if(flag){PCD_text("1",0,LINE_3);}*/
-		/*uint8_t val[1]={0};
-		val[0]=PINA;
-		if((PINA&1)==0){val[0] = 1; nRF24L01_transmit(val,1);}
-		else if((PINA&2)==0){val[0] = 2; nRF24L01_transmit(val,1);}
-		else if((PINA&4)==0){val[0] = 4; nRF24L01_transmit(val,1);}
-		else if((PINA&8)==0){val[0] = 8; nRF24L01_transmit(val,1);PORTB=0xff;}
-		else if((PINA&128)==0){val[0] = 16; nRF24L01_transmit(val,1); PORTB=0xff;}else PORTB=0;*/
-		/*A4988_forward(15);
-		while(A4988_movementControl()!=MOVED){
-			sprintf(buff,"%d",A4988_getDistance());
-			PCD_text(buff,0,LINE_3);
-			if(A4988_getDistance() == 15){
-				A4988_stop();
-			}
-		}
-		PCD_text("moved",0,LINE_0);
-		A4988_backward(300);
-		while(A4988_movementControl()!=MOVED);
-		A4988_left(90);
-		while(A4988_movementControl()!=MOVED);
-		A4988_right(90);
-		while(2);*/
+		PCD_text(buff,0,LINE_0);
+		_delay_ms(500);
+		
     }
 }
 
