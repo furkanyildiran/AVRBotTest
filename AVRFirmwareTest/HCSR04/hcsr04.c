@@ -19,5 +19,6 @@ __attribute__((noinline))uint16_t HCSR04_measure(void){
 	}
 	uint32_t command_num = (loop_counter*15)+19;
 	uint16_t dist = (uint16_t)(command_num*ConstantForDist);
+	_delay_ms(100);
 	return dist;
 }

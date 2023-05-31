@@ -92,17 +92,35 @@ int main(void)
 	*/
 	sei();
 	PCD_clear_all();
+	char b[10]={"\0"};
 	HCSR04_init();
     while (1) 
     {
-		
 		uint16_t distance = HCSR04_measure();
-		char buff[10]={"\0"};
-		sprintf(buff,"%d",distance);
-		PCD_clear_all();
-		PCD_text(buff,0,LINE_0);
-		_delay_ms(500);
-		
+		if (distance > 30){
+			A4988_forward(20);
+			PCD_clear(0,40,LINE_2);
+			while(A4988_movementControl()==NOT_MOVED){
+				if(HCSR04_measure()<30){
+					A4988_stop();
+					break;
+				}
+			}
+			
+			PCD_clear(0,40,LINE_2);
+			
+		}
+		else{
+			A4988_left(10);
+			PCD_clear(0,40,LINE_1);
+			while(A4988_movementControl() != MOVED){
+				PCD_text("burada",0,LINE_1);
+			}
+			PCD_clear(0,40,LINE_1);
+		}
+		PCD_clear(0,40,LINE_0);
+		sprintf(b,"%d",distance);
+		PCD_text(b,0,LINE_0);
     }
 }
 

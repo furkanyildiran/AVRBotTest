@@ -53,6 +53,7 @@ ISR(TIMER0_COMPA_vect){
 				CLEAR_COUNTERS();
 				speed_state=ACCELARATION;
 				movement_flag=MOVED;
+				_delay_ms(50);
 			}
 			break;
 		default:break;
